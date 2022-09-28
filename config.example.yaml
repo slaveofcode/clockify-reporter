@@ -1,0 +1,5 @@
+clockify:
+  apiKey: Your-API-Key
+
+workspace:
+  name: Your Workspace Name

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"sort"
@@ -142,6 +143,13 @@ func getPreferredWorkspaceId(wrkspcs []Workspace, workspaceName string) string {
 	return ""
 }
 
+var day *int
+
+func init() {
+	day = flag.Int("day", 0, "Day backward value")
+	flag.Parse()
+}
+
 func main() {
 	client := http_client.NewHTTPClient(60, nil)
 
@@ -160,9 +168,7 @@ func main() {
 	workspaceId := getPreferredWorkspaceId(*wrkspcs, viper.GetString("workspace.name"))
 	userId := user.ID
 
-	// specify date here
-	// timeToGet := time.Now().AddDate(0, 0, -1).UTC() // yesterday
-	timeToGet := time.Now().UTC()
+	timeToGet := time.Now().AddDate(0, 0, *day).UTC() // default today
 
 	startDay := time.Date(timeToGet.Year(), timeToGet.Month(), timeToGet.Day(), 0, 0, 0, timeToGet.Nanosecond(), timeToGet.Location()).Format(time.RFC3339)
 	endDay := time.Date(timeToGet.Year(), timeToGet.Month(), timeToGet.Day(), 23, 59, 59, timeToGet.Nanosecond(), timeToGet.Location()).Format(time.RFC3339)
@@ -190,11 +196,11 @@ func main() {
 		taskList = append(taskList, entry.Description)
 	}
 
-	log.Println("============= TODAY =============")
+	fmt.Printf("============= %s =============\n", timeToGet.Format("January 02, 2006"))
 	sort.SliceStable(taskList, func(i, j int) bool {
 		return i > j
 	})
 	for _, task := range taskList {
-		log.Println("-", task)
+		fmt.Println("-", task)
 	}
 }

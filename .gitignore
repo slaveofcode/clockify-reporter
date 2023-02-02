@@ -47,3 +47,5 @@ tmp/
 docker-compose.yml
 
 config.yaml
+
+clockify-report-to-slack
